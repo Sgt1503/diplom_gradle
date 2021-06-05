@@ -94,6 +94,7 @@ public class ContainerResolver {
                 else
                     notFull = false;
                 j++;
+                System.out.println(thing);
             }
         }
 

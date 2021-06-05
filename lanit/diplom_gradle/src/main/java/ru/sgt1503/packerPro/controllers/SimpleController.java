@@ -10,7 +10,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.converter.DoubleStringConverter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import ru.sgt1503.packerPro.Resolver.ContainerResolver;
 import ru.sgt1503.packerPro.entity.Container;
@@ -19,9 +18,7 @@ import ru.sgt1503.packerPro.service.ContainerService;
 import ru.sgt1503.packerPro.service.ThingService;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+
 
 @Component
 public class SimpleController {
@@ -31,6 +28,7 @@ public class SimpleController {
 
 	public ContainerService containerService;
 	public ThingService thingService;
+	public Button RefreshTableThing;
 
 	@Autowired
 	public SimpleController(ContainerService containerService, ThingService thingService) {
@@ -191,9 +189,8 @@ public class SimpleController {
 	}
 
 	public void deleteContainerClicked(ActionEvent actionEvent) {
-	}
-
-	public void editContainerClicked(ActionEvent actionEvent) {
+		int row = tableContainer.getSelectionModel().getSelectedIndex();
+		tableContainer.getItems().remove(row);
 	}
 
 	public void addThingClicked(ActionEvent actionEvent) {
@@ -215,10 +212,12 @@ public class SimpleController {
 		}
 
 	}
-	public void editThingClicked(ActionEvent actionEvent) {
-	}
+
 
 	public void deleteThingClicked(ActionEvent actionEvent) {
+		int row = tableThing.getSelectionModel().getSelectedIndex();
+		tableThing.getItems().remove(row);
+		thingService.deleteThing(tableThing.getSelectionModel().getSelectedItem());
 	}
 
 
@@ -282,9 +281,6 @@ public class SimpleController {
 		}
 	}
 
-	public void refreshComboBoxButtonClick(ActionEvent actionEvent) {
-	}
-
 	public void refreshData(){
 		if (containerService.getTableSize() != comboboxContainerName.getItems().size()) {
 			comboboxContainerName.getItems().removeAll();
@@ -295,5 +291,19 @@ public class SimpleController {
 	public void sortClicked(ActionEvent actionEvent) {
 		ContainerResolver containerResolver = new ContainerResolver(containerService, thingService);
 		containerResolver.solvePackingProblem();
+	}
+
+	public void onRefreshTableThingClicked(ActionEvent actionEvent) {
+		tableThing.getItems().removeAll();
+		if (thingService.getTableSize() != 0) {
+			thingData.addAll(thingService.getAll());
+		}
+		tableThing.setItems(thingData);
+		tableThing.setEditable(true);
+		nameContainerColumnThing.setCellFactory(ComboBoxTableCell.forTableColumn());
+		nameColumnThing.setCellFactory(TextFieldTableCell.forTableColumn());
+		widthColumnThing.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
+		lengthColumnThing.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
+		heightColumnThing.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
 	}
 }

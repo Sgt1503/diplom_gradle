@@ -110,17 +110,15 @@
                                     <children>
                                        <VBox alignment="CENTER" fillWidth="false">
                                           <children>
-                                             <HBox alignment="CENTER">
+                                             <HBox alignment="CENTER" spacing="10.0">
                                                 <children>
                                                    <Button fx:id="addThing" onAction="#addThingClicked" text="Добавить &#10;товар">
                                                       <padding>
                                                          <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                                                       </padding>
-                                                   </Button>
-                                                   <Button fx:id="editThing" onAction="#editThingClicked" text="Редактировать &#10;товар">
-                                                      <padding>
-                                                         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-                                                      </padding>
+                                                      <HBox.margin>
+                                                         <Insets />
+                                                      </HBox.margin>
                                                    </Button>
                                                    <Button fx:id="deleteThing" onAction="#deleteThingClicked" text="Удалить&#10;товар">
                                                       <padding>
@@ -128,6 +126,9 @@
                                                       </padding>
                                                    </Button>
                                                 </children>
+                                                <VBox.margin>
+                                                   <Insets />
+                                                </VBox.margin>
                                              </HBox>
                                              <HBox>
                                                 <children>
@@ -135,7 +136,7 @@
                                                       <children>
                                                          <TextField fx:id="nameThing" alignment="BOTTOM_LEFT" promptText="Название товара/предмета" />
                                                          <ComboBox fx:id="comboboxContainerName" prefHeight="26.0" prefWidth="179.0" promptText="Контейнер" />
-                                                         <Button fx:id="RefreshContainerComboBox" mnemonicParsing="false" onAction="#onClickcomboboxContainerName" prefHeight="26.0" prefWidth="179.0" text="Обновить контейнеры" />
+                                                         <Button fx:id="RefreshTableThing" mnemonicParsing="false" onAction="#onRefreshTableThingClicked" prefHeight="26.0" prefWidth="179.0" text="Обновить таблицу" />
                                                       </children>
                                                    </VBox>
                                                    <VBox layoutX="10.0" layoutY="10.0">
