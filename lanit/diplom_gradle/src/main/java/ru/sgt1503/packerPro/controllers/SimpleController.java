@@ -11,6 +11,7 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.converter.DoubleStringConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ru.sgt1503.packerPro.Resolver.Algorithm;
 import ru.sgt1503.packerPro.Resolver.ContainerResolver;
 import ru.sgt1503.packerPro.entity.Container;
 import ru.sgt1503.packerPro.entity.Thing;
@@ -28,7 +29,6 @@ public class SimpleController {
 
 	public ContainerService containerService;
 	public ThingService thingService;
-	public Button RefreshTableThing;
 
 	@Autowired
 	public SimpleController(ContainerService containerService, ThingService thingService) {
@@ -39,8 +39,6 @@ public class SimpleController {
 	@FXML
 	public Button addContainer;
 
-	@FXML
-	public Button editContainer;
 
 	@FXML
 	public Button deleteContainer;
@@ -57,8 +55,6 @@ public class SimpleController {
 	@FXML
 	public TextField heightContainer;
 
-	@FXML
-	public ComboBox<String> comboboxContainerName;
 
 	@FXML
 	public TextField nameThing;
@@ -91,14 +87,11 @@ public class SimpleController {
 	@FXML
 	public Button addThing;
 
-	@FXML
-	public Button editThing;
+
 
 	@FXML
 	public Button deleteThing;
 
-	@FXML
-	public Button RefreshContainerComboBox;
 
 	@FXML
 	public TableView<Thing> tableThing;
@@ -150,7 +143,6 @@ public class SimpleController {
 
 
 		// устанавливаем тип и значение которое должно хранится в колонках Таблицы Thing
-		nameContainerColumnThing.setCellValueFactory(new PropertyValueFactory<Thing, Container>("container"));
 		nameColumnThing.setCellValueFactory(new PropertyValueFactory<Thing, String>("name"));
 		widthColumnThing.setCellValueFactory(new PropertyValueFactory<Thing, Double>("width"));
 		lengthColumnThing.setCellValueFactory(new PropertyValueFactory<Thing, Double>("length"));
@@ -163,15 +155,10 @@ public class SimpleController {
 		}
 		tableThing.setItems(thingData);
 		tableThing.setEditable(true);
-		nameContainerColumnThing.setCellFactory(ComboBoxTableCell.forTableColumn());
 		nameColumnThing.setCellFactory(TextFieldTableCell.forTableColumn());
 		widthColumnThing.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
 		lengthColumnThing.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
 		heightColumnThing.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
-
-		//Обновление данных в Combobox
-		refreshData();
-
 	}
 
 	@FXML
@@ -185,7 +172,6 @@ public class SimpleController {
 				Double.parseDouble(heightContainer.getText()));
 			ContainerData.add(containerService.createContainer(container));
 		}
-		refreshData();
 	}
 
 	public void deleteContainerClicked(ActionEvent actionEvent) {
@@ -208,7 +194,7 @@ public class SimpleController {
 								Double.parseDouble(lengthThing.getText()),
 								Double.parseDouble(heightThing.getText()),
 								defaultPosition,
-								containerService.getContainerByName(comboboxContainerName.getSelectionModel().getSelectedItem()))));
+								null)));
 		}
 
 	}
@@ -243,12 +229,6 @@ public class SimpleController {
 		containerService.editContainer(container);
 	}
 
-	public void onEdtChangeThingNameContainer(TableColumn.CellEditEvent<Thing, String> thingStringCellEditEvent) {
-		Thing thing = tableThing.getSelectionModel().getSelectedItem();
-		thing.setName(thingStringCellEditEvent.getNewValue());
-		thingService.editThing(thing);
-	}
-
 	public void onEdtChangeThingName(TableColumn.CellEditEvent<Thing, String> thingStringCellEditEvent) {
 		Thing thing = tableThing.getSelectionModel().getSelectedItem();
 		thing.setName(thingStringCellEditEvent.getNewValue());
@@ -273,24 +253,9 @@ public class SimpleController {
 		thingService.editThing(thing);
 	}
 
-	public void onClickcomboboxContainerName(ActionEvent actionEvent) {
-		System.out.println(comboboxContainerName.getItems().size());
-		if (containerService.getTableSize() != comboboxContainerName.getItems().size()) {
-			comboboxContainerName.getItems().removeAll();
-			comboboxContainerName.getItems().setAll(containerService.getAllNames());
-		}
-	}
-
-	public void refreshData(){
-		if (containerService.getTableSize() != comboboxContainerName.getItems().size()) {
-			comboboxContainerName.getItems().removeAll();
-			comboboxContainerName.getItems().setAll(containerService.getAllNames());
-		}
-	}
-
 	public void sortClicked(ActionEvent actionEvent) {
-		ContainerResolver containerResolver = new ContainerResolver(containerService, thingService);
-		containerResolver.solvePackingProblem();
+		Algorithm algorithm = new Algorithm(containerService, thingService);
+		algorithm.resolve();
 	}
 
 	public void onRefreshTableThingClicked(ActionEvent actionEvent) {
@@ -300,7 +265,6 @@ public class SimpleController {
 		}
 		tableThing.setItems(thingData);
 		tableThing.setEditable(true);
-		nameContainerColumnThing.setCellFactory(ComboBoxTableCell.forTableColumn());
 		nameColumnThing.setCellFactory(TextFieldTableCell.forTableColumn());
 		widthColumnThing.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
 		lengthColumnThing.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));

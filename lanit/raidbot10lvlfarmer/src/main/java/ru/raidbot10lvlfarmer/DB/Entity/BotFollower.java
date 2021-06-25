@@ -1,4 +1,4 @@
-package ru.sgt1503.red_roses_bot.DB.Entity;
+package ru.raidbot10lvlfarmer.DB.Entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,7 +12,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @DynamicInsert
 @DynamicUpdate
-@Table(name = "BotFollower")
+@Table(name = "fake_account")
 public class BotFollower {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -22,26 +22,16 @@ public class BotFollower {
     private String username;
 
     @Column
-    private String userID;
+    private String email;
 
     @Column
-    private Long abobaCounter;
+    private String password;
 
-    @Column
-    private String steamID;
-
-    @Column
-    private Long messageCounter;
-
-    public BotFollower(String username, String userID, Long abobaCounter, String steamID, Long messageCounter) {
+    public BotFollower(String username, String password, String email) {
         this.username = username;
-        this.userID = userID;
-        this.abobaCounter = abobaCounter;
-        this.steamID = steamID;
-        this.messageCounter = messageCounter;
+        this.password = password;
+        this.email = email;
     }
-
-
 
     public BotFollower() {
     }

@@ -1,9 +1,10 @@
-package ru.sgt1503.packerPro.service;
+package ru.sgt1503.packerPro.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.sgt1503.packerPro.entity.Container;
 import ru.sgt1503.packerPro.repo.ContainerRepository;
+import ru.sgt1503.packerPro.service.ContainerService;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,7 +14,7 @@ import java.util.List;
  * todo Document type ContainerServiceImpl
  */
 @Service
-public class ContainerServiceImpl implements ContainerService{
+public class ContainerServiceImpl implements ContainerService {
 
 
     private final ContainerRepository containerRepository;
