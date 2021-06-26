@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -17,9 +18,22 @@ import java.util.Set;
 @Table(name = "placement")
 public class Placement {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @OneToMany
-    private Set<Container> containerSet;
+    private List<Container> containers;
+
+    public Placement(List<Container> containers) {
+        this.containers = containers;
+    }
+
+    public Placement() {
+
+    }
+
+    public Placement(long id, List<Container> containers) {
+        this.id = id;
+        this.containers = containers;
+    }
 }

@@ -5,17 +5,17 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.converter.DoubleStringConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.sgt1503.packerPro.Resolver.Algorithm;
-import ru.sgt1503.packerPro.Resolver.ContainerResolver;
 import ru.sgt1503.packerPro.entity.Container;
 import ru.sgt1503.packerPro.entity.Thing;
+import ru.sgt1503.packerPro.service.ChromosomeService;
 import ru.sgt1503.packerPro.service.ContainerService;
+import ru.sgt1503.packerPro.service.PlacementService;
 import ru.sgt1503.packerPro.service.ThingService;
 
 import java.util.ArrayList;
@@ -29,12 +29,19 @@ public class SimpleController {
 
 	public ContainerService containerService;
 	public ThingService thingService;
+	private final PlacementService placementService;
+	private final ChromosomeService chromosomeService;
 
 	@Autowired
-	public SimpleController(ContainerService containerService, ThingService thingService) {
+	public SimpleController(ContainerService containerService, ThingService thingService, PlacementService placementService,
+							ChromosomeService chromosomeService) {
 		this.containerService = containerService;
 		this.thingService = thingService;
+		this.placementService = placementService;
+		this.chromosomeService = chromosomeService;
 	}
+
+
 
 	@FXML
 	public Button addContainer;
@@ -164,12 +171,12 @@ public class SimpleController {
 	@FXML
 	public void addContainerClicked(ActionEvent actionEvent) {
 		if (!(nameContainer.getText().isEmpty() && widthContainer.getText().isEmpty()
-			&& lengthContainer.getText().isEmpty() && heightContainer.getText().isEmpty())) {
+				&& lengthContainer.getText().isEmpty() && heightContainer.getText().isEmpty())) {
 			Container container = new Container(
-				nameContainer.getText(),
-				Double.parseDouble(widthContainer.getText()),
-				Double.parseDouble(lengthContainer.getText()),
-				Double.parseDouble(heightContainer.getText()));
+					nameContainer.getText(),
+					Double.parseDouble(widthContainer.getText()),
+					Double.parseDouble(lengthContainer.getText()),
+					Double.parseDouble(heightContainer.getText()));
 			ContainerData.add(containerService.createContainer(container));
 		}
 	}
@@ -181,7 +188,7 @@ public class SimpleController {
 
 	public void addThingClicked(ActionEvent actionEvent) {
 		if (!(nameThing.getText().isEmpty() && widthThing.getText().isEmpty()
-			&& lengthThing.getText().isEmpty() && heightThing.getText().isEmpty())) {
+				&& lengthThing.getText().isEmpty() && heightThing.getText().isEmpty())) {
 			ArrayList<Double> defaultPosition = new ArrayList<>();
 			for (int i = 0; i < 3; i++) {
 				defaultPosition.add(0.0);
@@ -189,12 +196,12 @@ public class SimpleController {
 			thingData.add(
 					thingService.createThing(
 							new Thing(
-								nameThing.getText(),
-								Double.parseDouble(widthThing.getText()),
-								Double.parseDouble(lengthThing.getText()),
-								Double.parseDouble(heightThing.getText()),
-								defaultPosition,
-								null)));
+									nameThing.getText(),
+									Double.parseDouble(widthThing.getText()),
+									Double.parseDouble(lengthThing.getText()),
+									Double.parseDouble(heightThing.getText()),
+									defaultPosition,
+									null)));
 		}
 
 	}
@@ -254,7 +261,7 @@ public class SimpleController {
 	}
 
 	public void sortClicked(ActionEvent actionEvent) {
-		Algorithm algorithm = new Algorithm(containerService, thingService);
+		Algorithm algorithm = new Algorithm(containerService, thingService, placementService, chromosomeService);
 		algorithm.resolve();
 	}
 

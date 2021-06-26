@@ -24,4 +24,13 @@ public class Chromosome {
 
     @Column
     private double usedSpace;
+
+    public Chromosome(Placement placement, double usedSpace) {
+        this.placement = placement;
+        this.usedSpace = usedSpace;
+    }
+
+    public Chromosome() {
+
+    }
 }

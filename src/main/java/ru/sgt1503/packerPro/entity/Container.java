@@ -45,7 +45,7 @@ public class Container {
     private double height;
 
     @OneToMany(mappedBy = "container", fetch = FetchType.EAGER)
-    private List<Thing> things = new ArrayList<>();
+    private List<Thing> things;
 
     public Container(String name, double width, double length, double height) {
         this.name = name;
