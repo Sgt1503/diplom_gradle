@@ -83,8 +83,8 @@ public class Algorithm {
                         z = Math.random() * (container.getHeight() - thing.getHeight());
 
 
-                        for (int k = 0; k < container.getThings().size(); k++) {
-                            Thing thing1 = container.getThings().get(k);
+                        for (int k = 0; k < things.size(); k++) {
+                            Thing thing1 = things.get(k);
                             if (thing1.getPosition().size() != 0) {
                                 if (x > thing1.getPosition().get(0) + thing1.getWidth() || x + thing.getWidth() < thing1.getPosition().get(0)
                                         &&
