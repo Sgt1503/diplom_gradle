@@ -54,15 +54,16 @@ public class Algorithm {
             Container container = containers.get(i);
             double usedSpace = 0l;
             double volume = container.getHeight() * container.getWidth() * container.getLength();
-            int placedThingsCounter = 0;
             ArrayList position = new ArrayList();
             if (things.size() == 0){
             break;
             }
             usedContainers++;
             for (int j = 0; j < things.size(); j++) {
+                int placedThingsCounter = 0;
                 int j1 = (int) (Math.random() * things.size());
                 Thing thing = things.get(j1);
+                things.remove(thing);
                 int notPlacedThings = things.size();
                 double x;
                 double y;
@@ -77,7 +78,7 @@ public class Algorithm {
                     position.add(defautz);
                 }
                 if (container.getThings().size() > 0) {
-                    while (placedThingsCounter <= notPlacedThings) {
+                    while (placedThingsCounter < notPlacedThings) {
                         x = Math.random() * (container.getWidth() - thing.getWidth());
                         y = Math.random() * (container.getLength() - thing.getLength());
                         z = Math.random() * (container.getHeight() - thing.getHeight());
@@ -112,7 +113,6 @@ public class Algorithm {
                 thing.setPosition(position);
                 thing.setContainer(container);
                 container.getThings().add(thing);
-                things.remove(thing);
                 position.clear();
             }
             totalUsedSpace += usedSpace;
