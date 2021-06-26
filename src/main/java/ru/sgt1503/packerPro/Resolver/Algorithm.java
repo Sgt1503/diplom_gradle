@@ -33,7 +33,6 @@ public class Algorithm {
         this.thingService = thingService;
         this.chromosomeService = chromosomeService;
         this.placementService = placementService;
-        resolve();
     }
 
 
@@ -118,8 +117,8 @@ public class Algorithm {
             totalUsedSpace += usedSpace;
         }
         Placement placement = new Placement(containers);
-//        placementService.createPlacement(placement);
-        Chromosome chromosome = new Chromosome(placement, totalUsedSpace);
+        placementService.createPlacement(placement);
+//        Chromosome chromosome = new Chromosome(placement, totalUsedSpace);
 //        chromosomeService.createChromosome(chromosome);
     }
 }

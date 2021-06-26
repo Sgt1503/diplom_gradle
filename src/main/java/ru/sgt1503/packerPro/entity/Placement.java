@@ -18,10 +18,10 @@ import java.util.Set;
 @Table(name = "placement")
 public class Placement {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @OneToMany
+    @ManyToMany
     private List<Container> containers;
 
     public Placement(List<Container> containers) {
@@ -30,10 +30,5 @@ public class Placement {
 
     public Placement() {
 
-    }
-
-    public Placement(long id, List<Container> containers) {
-        this.id = id;
-        this.containers = containers;
     }
 }
