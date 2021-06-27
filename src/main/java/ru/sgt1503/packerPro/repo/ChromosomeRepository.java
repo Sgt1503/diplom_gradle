@@ -8,4 +8,5 @@ import ru.sgt1503.packerPro.entity.Chromosome;
 public interface ChromosomeRepository extends CrudRepository<Chromosome, Long> {
     Chromosome findChromosomeByUsedSpace(Double usedSpace);
     void deleteByUsedSpace(Double usedSpace);
-}
+    Chromosome getChromosomeByUsedSpaceLessThan(Long longVal);
+    }

@@ -1,7 +1,6 @@
 package ru.sgt1503.packerPro.Resolver;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import ru.sgt1503.packerPro.entity.Chromosome;
 import ru.sgt1503.packerPro.entity.Container;
@@ -12,10 +11,7 @@ import ru.sgt1503.packerPro.service.ContainerService;
 import ru.sgt1503.packerPro.service.PlacementService;
 import ru.sgt1503.packerPro.service.ThingService;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * todo Document type Algorithm
@@ -37,8 +33,26 @@ public class Algorithm {
 
 
     public void resolve(){
-        generateNFA();
+        for (int i = 0; i < 8; i++) {
+            generateNFA();
+        }
+        geneCrossing(getTwoParents());
     }
+
+    private void geneCrossing(List<Chromosome> twoParents) {
+        List<Chromosome> chromosomes = chromosomeService.getEightChromosomes();
+        Collections.sort(chromosomes, new Comparator<Chromosome>() {
+            @Override
+            public int compare(Chromosome o1, Chromosome o2) {
+                return String.valueOf((int)o1.getUsedSpace()).compareTo(String.valueOf((int)o2.getUsedSpace()));
+            }
+        });
+        while (chromosomes.size() > 6)
+            chromosomes.remove(chromosomes.size());
+        chromosomes.addAll(twoParents);
+
+    }
+
 
     public void generateNFA(){
         //ArrayList это массив, который умеет сам расширяться
@@ -46,7 +60,7 @@ public class Algorithm {
         List<Thing> things = thingService.getAll();
         //контейнеры
         List<Container> containers = containerService.getAll();
-        double totalUsedSpace = 0l;
+        double totalUsedSpace = 0;
         int usedContainers = 0;
 
         for (int i = 0; i < containers.size(); i++) {
@@ -113,12 +127,31 @@ public class Algorithm {
                 thing.setContainer(container);
                 container.getThings().add(thing);
                 position.clear();
+                totalUsedSpace += usedSpace;
             }
-            totalUsedSpace += usedSpace;
         }
         Placement placement = new Placement(containers);
         placementService.createPlacement(placement);
-//        Chromosome chromosome = new Chromosome(placement, totalUsedSpace);
-//        chromosomeService.createChromosome(chromosome);
+        Chromosome chromosome = new Chromosome(placement, totalUsedSpace);
+        chromosomeService.createChromosome(chromosome);
     }
+
+    private List<Chromosome> getTwoParents() {
+        List<Chromosome> chromosomes = chromosomeService.getEightChromosomes();
+        int p1 = 0;
+        int p2 = 0;
+        while (p1 == p2)
+        {
+            p1 = (int) Math.random() * chromosomes.size();
+            p2 = (int) Math.random() * chromosomes.size();
+        }
+
+        Chromosome parent1 = chromosomes.get(p1);
+        Chromosome parent2 = chromosomes.get(p2);
+        List<Chromosome> parents = new ArrayList<>();
+        parents.add(parent1);
+        parents.add(parent2);
+        return parents;
+    }
+
 }
