@@ -6,6 +6,7 @@ import ru.sgt1503.packerPro.entity.Chromosome;
 import ru.sgt1503.packerPro.repo.ChromosomeRepository;
 import ru.sgt1503.packerPro.service.ChromosomeService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,16 +33,21 @@ public class ChromosomeServiceImpl implements ChromosomeService {
 
     @Override
     public List<Chromosome> getEightChromosomes() {
-        List<Chromosome> chromosomes = null;
+        List<Chromosome> chromosomes = new ArrayList<>();
         Iterable<Chromosome> c = chromosomeRepository.findAll();
         c.iterator().forEachRemaining(chromosome -> chromosomes.add(chromosome));
         while (chromosomes.size() > 8){
-            chromosomes.remove(chromosomes.size());}
+            chromosomes.remove(0);}
         return chromosomes;
     }
 
     @Override
     public Chromosome getChromosome(Chromosome chromosome) {
         return chromosomeRepository.getChromosomeByUsedSpaceLessThan(Long.MAX_VALUE);
+    }
+
+    @Override
+    public void deleteAll() {
+        chromosomeRepository.deleteAll();
     }
 }
