@@ -50,4 +50,9 @@ public class ChromosomeServiceImpl implements ChromosomeService {
     public void deleteAll() {
         chromosomeRepository.deleteAll();
     }
+
+    @Override
+    public void deleteChromosome(Chromosome chromosome) {
+        chromosomeRepository.delete(chromosome);
+    }
 }

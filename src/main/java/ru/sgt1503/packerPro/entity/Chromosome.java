@@ -6,9 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
-/**
- * todo Document type Placement
- */
+
 @Data
 @Getter
 @Setter
@@ -29,6 +27,7 @@ public class Chromosome {
         this.placement = placement;
         this.usedSpace = usedSpace;
     }
+
 
     public Chromosome() {
 

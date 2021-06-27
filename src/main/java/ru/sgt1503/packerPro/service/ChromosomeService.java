@@ -13,4 +13,5 @@ public interface ChromosomeService {
     List<Chromosome> getEightChromosomes();
     Chromosome getChromosome(Chromosome chromosome);
     void deleteAll();
+    void deleteChromosome(Chromosome chromosome);
 }

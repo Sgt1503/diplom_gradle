@@ -13,9 +13,7 @@ import ru.sgt1503.packerPro.service.ThingService;
 
 import java.util.*;
 
-/**
- * todo Document type Algorithm
- */
+
 @Component
 public class Algorithm {
     private final ContainerService containerService;
@@ -33,11 +31,27 @@ public class Algorithm {
 
 
     public void resolve(){
-    chromosomeService.deleteAll();
+        int counter = 1;
+        chromosomeService.deleteAll();
         for (int i = 0; i < 8; i++) {
             generateNFA();
         }
         geneCrossing(getTwoParents());
+        int randomMutation = (int) Math.random() * 9;
+        if (randomMutation >= 1)
+            mutation(randomMutation);
+        System.out.println("Population #" + counter);
+        counter++;
+    }
+
+    private void mutation(int randomMutation) {
+        List<Chromosome> chromosomes = chromosomeService.getEightChromosomes();
+        Chromosome chromosome = chromosomes.get(randomMutation);
+        chromosomeService.deleteChromosome(chromosome);
+        List<Container> containers = containerService.getAll();
+        List<Thing> things = thingService.getAll();
+        Chromosome mutatedChromosome = generateNewMutation(things,containers,randomMutation);
+        chromosomeService.createChromosome(mutatedChromosome);
     }
 
     private void geneCrossing(List<Chromosome> twoParents) {
@@ -196,24 +210,25 @@ public class Algorithm {
         return chromosome;
     }
 
-    public void generateNFA(){
-        //ArrayList это массив, который умеет сам расширяться
-        //коробки внесенные в бд
-        List<Thing> things = thingService.getAll();
-        //контейнеры
-        List<Container> containers = containerService.getAll();
+    public Chromosome generateNewMutation(List<Thing> things1, List<Container> containers1, int chance){
+        List<Thing> things = things1;
+        List<Container> containers = containers1;
         double totalUsedSpace = 0;
-        int usedContainers = 0;
-
+        for (int w = 0; w < containers.size(); w++) {
+            for (int q = 0; q < containers.get(w).getThings().size(); q++) {
+                if (containers.get(w).getThings().get(q).equals(things.get(chance))){
+                    containers.get(w).getThings().remove(q);
+                }
+            }
+        }
         for (int i = 0; i < containers.size(); i++) {
             Container container = containers.get(i);
             double usedSpace = 0l;
             double volume = container.getHeight() * container.getWidth() * container.getLength();
             ArrayList position = new ArrayList();
             if (things.size() == 0){
-            break;
+                break;
             }
-            usedContainers++;
             for (int j = 0; j < things.size(); j++) {
                 int placedThingsCounter = 0;
                 int j1 = (int) (Math.random() * things.size());
@@ -273,15 +288,103 @@ public class Algorithm {
             }
         }
         Placement placement = new Placement(containers);
+        Chromosome chromosome = new Chromosome(placement, totalUsedSpace);
+        return chromosome;
+    }
+
+
+    public void generateNFA(){
+        //ArrayList это массив, который умеет сам расширяться
+        //коробки внесенные в бд
+        List<Thing> things = thingService.getAll();
+        //контейнеры
+        List<Container> containers = containerService.getAll();
+        List<Container> containersResolved = new ArrayList<>();
+        double totalUsedSpace = 0;
+        int usedContainers = 0;
+
+        for (int i = 0; i < containers.size(); i++) {
+            Container container = containers.get(i);
+            double usedSpace = 0l;
+            double volume = container.getHeight() * container.getWidth() * container.getLength();
+            ArrayList position = new ArrayList();
+            if (things.size() == 0){
+            break;
+            }
+            usedContainers++;
+            for (int j = 0; j < things.size(); j++) {
+                int placedThingsCounter = 0;
+                int j1 = (int) (Math.random() * things.size());
+                Thing thing = things.get(j1);
+                things.remove(thing);
+                int notPlacedThings = things.size();
+                double x;
+                double y;
+                double z;
+                double defautx = 0l;
+                double defauty = 0l;
+                double defautz = 0l;
+                if (container.getThings().size() == 0){
+                    position.clear();
+                    usedSpace += thing.getHeight() * thing.getLength() * thing.getWidth();
+                    position.add(defautx);
+                    position.add(defauty);
+                    position.add(defautz);
+                    thing.setPosition(position);
+                    thing.setContainer(container);
+                }
+                if (container.getThings().size() > 0) {
+                    while (placedThingsCounter < notPlacedThings) {
+                        x = Math.random() * (container.getWidth() - thing.getWidth());
+                        y = Math.random() * (container.getLength() - thing.getLength());
+                        z = Math.random() * (container.getHeight() - thing.getHeight());
+
+
+                        for (int k = 0; k < things.size(); k++) {
+                            Thing thing1 = things.get(k);
+                            if (thing1.getPosition().size() != 0) {
+                                if (x > thing1.getPosition().get(0) + thing1.getWidth() || x + thing.getWidth() < thing1.getPosition().get(0)
+                                        &&
+                                        y > thing1.getPosition().get(1) + thing1.getLength() || y + thing.getLength() < thing1.getPosition().get(1)
+                                        &&
+                                        z > thing1.getPosition().get(2) + thing1.getHeight() || z + thing.getHeight() < thing1.getPosition().get(2)
+                                        && volume >= usedSpace
+                                ) {
+                                    placedThingsCounter++;
+                                }
+
+                            }
+                            placedThingsCounter++;
+                            if (placedThingsCounter == notPlacedThings) {
+                                position.clear();
+                                position.add(x);
+                                position.add(y);
+                                position.add(z);
+                                usedSpace += thing.getHeight() * thing.getLength() * thing.getWidth();
+                                thing.setPosition(position);
+                                thing.setContainer(container);
+                            }
+                        }
+
+                    }
+                }
+
+                container.getThings().add(thing);
+                container.getThings();
+                totalUsedSpace += usedSpace;
+                containersResolved.add(container);
+            }
+        }
+        Placement placement = new Placement(containersResolved);
         placementService.createPlacement(placement);
         Chromosome chromosome = new Chromosome(placement, totalUsedSpace);
         chromosomeService.createChromosome(chromosome);
     }
 
-    private List<Chromosome> getTwoParents() {
+    public List<Chromosome> getTwoParents() {
         List<Chromosome> chromosomes = chromosomeService.getEightChromosomes();
-        int p1 = 0;
-        int p2 = 0;
+        int p1 = (int) ((int) 1 + Math.random() * chromosomes.size());
+        int p2 = (int) ((int) 1 + Math.random() * chromosomes.size());
         while (p1 == p2)
         {
             p1 = (int) Math.random() * chromosomes.size();
