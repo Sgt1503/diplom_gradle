@@ -17,7 +17,7 @@ public class Chromosome {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     private Placement placement;
 
     @Column
@@ -28,6 +28,11 @@ public class Chromosome {
         this.usedSpace = usedSpace;
     }
 
+    public Chromosome(long id, Placement placement, double usedSpace) {
+        this.id = id;
+        this.placement = placement;
+        this.usedSpace = usedSpace;
+    }
 
     public Chromosome() {
 

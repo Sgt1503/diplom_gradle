@@ -84,7 +84,7 @@ public class Algorithm {
         int l80P = (int) (countOfThings * 0.8);
 
         List<Thing> thingsIterable1 = new ArrayList<>();
-        for (int l = pr2.size(); l >= f20P; l--) {
+        for (int l = pr2.size() - 1; l >= f20P; l--) {
             thingsIterable1.addAll(pr2.get(l).getThings());
         }
 
@@ -94,7 +94,7 @@ public class Algorithm {
         Chromosome intermediate = generateNewAccommodation(last80PercentsOfThings,child1);
         child1.addAll(intermediate.getPlacement().getContainers());
         mutatedPlacement1.setContainers(child1);
-        Chromosome mutatedChromosome1 = new Chromosome(mutatedPlacement1, intermediate.getUsedSpace());
+        Chromosome mutatedChromosome1 = new Chromosome((long)Math.random()*100, mutatedPlacement1, intermediate.getUsedSpace());
 
 
         List<Thing> first20PercentsOfThingsOf2Child = new ArrayList<>();
@@ -112,7 +112,7 @@ public class Algorithm {
 
 
         List<Thing> thingsIterable3 = new ArrayList<>();
-        for (int l = pr2.size(); l >= f20P; l--) {
+        for (int l = pr2.size() - 1; l >= f20P; l--) {
             thingsIterable3.addAll(pr1.get(l).getThings());
         }
 
@@ -122,7 +122,7 @@ public class Algorithm {
         Chromosome intermediate1 = generateNewAccommodation(last80PercentsOfThingsOf2Child,child2);
         child2.addAll(intermediate.getPlacement().getContainers());
         mutatedPlacement2.setContainers(child2);
-        Chromosome mutatedChromosome2 = new Chromosome(mutatedPlacement2, intermediate1.getUsedSpace());
+        Chromosome mutatedChromosome2 = new Chromosome((long)Math.random()*100,mutatedPlacement2, intermediate1.getUsedSpace());
 
         chromosomeService.createChromosome(mutatedChromosome1);
         chromosomeService.createChromosome(mutatedChromosome2);
@@ -383,12 +383,12 @@ public class Algorithm {
 
     public List<Chromosome> getTwoParents() {
         List<Chromosome> chromosomes = chromosomeService.getEightChromosomes();
-        int p1 = (int) ((int) 1 + Math.random() * chromosomes.size());
-        int p2 = (int) ((int) 1 + Math.random() * chromosomes.size());
+        int p1 = (int) (1+Math.random() * chromosomes.size()-1);
+        int p2 = (int) (1+Math.random() * chromosomes.size()-1);
         while (p1 == p2)
         {
-            p1 = (int) Math.random() * chromosomes.size();
-            p2 = (int) Math.random() * chromosomes.size();
+            p1 = (int) (1+Math.random() * chromosomes.size()-1);
+            p2 = (int) (1+Math.random() * chromosomes.size()-1);
         }
 
         Chromosome parent1 = chromosomes.get(p1);

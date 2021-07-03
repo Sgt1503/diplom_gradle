@@ -21,7 +21,7 @@ public class Placement {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Container> containers;
 
     public Placement(List<Container> containers) {
